@@ -1026,9 +1026,7 @@ window.MVW_VIEWS = (() => {
       ${companyTabs(co, "risks")}
 
       <div class="callout">
-        Risk titles and verbatim language come from the latest <strong>FY2025 10-K Item 1A</strong> with Q1 2026 update notes where mgmt commented on the same topic.
-        Severity and likelihood scores are <strong>analyst-coded overlays</strong> — not company disclosures.
-        Hover or click any dot to jump to the verbatim risk language.
+        Risk titles &amp; verbatim language come from <strong>FY2025 10-K Item 1A</strong>, enriched with <strong>Q1 2026 management commentary</strong> on each topic. Items tagged <strong>(Q1 2026)</strong> in the title are <strong>Q1-emergent risks</strong> not in the 10-K — sourced from the Q1 release / call. Severity &amp; likelihood scores are <strong>analyst-coded overlays</strong>, not company disclosures. Hover or click any dot to jump to the verbatim risk language.
       </div>
 
       <div class="grid grid--2" style="align-items:start;">
