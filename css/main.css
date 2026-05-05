@@ -1293,6 +1293,64 @@ table.data td.muted { color: var(--text-secondary); font-size: 12px; font-weight
   color: var(--ink-deep);
 }
 
+/* Live stock quote (topbar) — added 2026-05-05 */
+.nav-pill-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+  min-width: 96px;
+}
+.nav-pill-stack .nav-pill { width: 100%; }
+
+.ticker-quote {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 4px;
+  font-family: 'Lato', sans-serif;
+  line-height: 1.2;
+  white-space: nowrap;
+  cursor: default;
+}
+.ticker-quote .ticker-sym {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+}
+.ticker-quote .ticker-price {
+  font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink-deep);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.3px;
+}
+.ticker-quote .ticker-price[data-placeholder="1"] {
+  color: var(--text-tertiary);
+  font-weight: 500;
+}
+.ticker-quote .ticker-change {
+  font-size: 10px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.1px;
+}
+.ticker-quote .ticker-change.is-positive { color: var(--positive); }
+.ticker-quote .ticker-change.is-negative { color: var(--negative); }
+.ticker-quote .ticker-change.is-neutral  { color: var(--text-tertiary); }
+
+@media (max-width: 1100px) {
+  .ticker-quote .ticker-sym { display: none; }
+  .nav-pill-stack { min-width: 88px; }
+}
+@media (max-width: 700px) {
+  .ticker-quote { display: none; }
+}
+
 /* Strategic-vector tag rail (overview "executive read" panel) */
 .vector-tag {
   display: inline-block;

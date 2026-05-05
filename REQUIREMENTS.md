@@ -37,6 +37,13 @@ These three are the only public pure-play vacation-ownership operators of meanin
 - The MVW Q1 2026 Investor Presentation PDF (in the project parent folder) is treated as primary for: addressable market (~55M US households), Adj EBITDA contribution mix (Mgmt&Exch 35% / Dev 35% / Financing 20% / Rentals 10%), liquidity ($854M), debt maturity ladder, and 2026 guidance ($755-780M Adj EBITDA, $375-425M FCF, $1,815-1,885M contract sales).
 - Strategic-initiatives panel must list: new sales/marketing leadership, owner-loyalty tier expansion (May 1), Dream Vacation Packages (late May), Inner Circle events (June 22), data-driven tour logistics, Bonvoy + World of Hyatt partnership marketing.
 
+### Live stock quotes (added 2026-05-05)
+- A small live stock-quote display sits under each of the three company nav pills (VAC / HGV / TNL) in the topbar.
+- Shows current price + absolute change + percent change with green/red coloring.
+- Refreshes every 60 seconds while the tab is visible. No API key required (Yahoo Finance via public CORS proxy).
+- Graceful fallback to `—` if the feed is unavailable; the rest of the dashboard is unaffected.
+- This is the **only** live/networked data point in the dashboard — every other figure is sourced from filings and edited manually in `js/data.js`.
+
 ### Source-citation requirements
 - Every numeric KPI in `js/data.js` carries a `source:` string with the document name (e.g., `"MVW Q1 2026 release"`, `"HGV Q1 2026 call (Mathewes)"`).
 - Every page renders a Sources block at the bottom with hyperlinks to: Q1 release, Q1 call transcript, latest 10-K, IR page, EDGAR filings index.
@@ -56,3 +63,4 @@ These three are the only public pure-play vacation-ownership operators of meanin
 
 ## Changelog
 - 2026-05-05: Initial scope set for the Q1 2026 dashboard.
+- 2026-05-05: Added live stock-quote display under company nav pills (Yahoo Finance via public CORS proxy, 60s refresh).

@@ -24,5 +24,16 @@ Append a dated bullet whenever architecture, data shape, file structure, framewo
 
 - The MVW Q1 2026 release and presentation report consolidated contract sales ($411M, -2% YoY) and tour decline (-3% YoY) but do **not** publish a Q1 2026 VPG number in the headline materials. April 2026 VPG (+12.7% YoY) was disclosed verbally on the call. The data file leaves `q1Headline.vpg.value = null` and includes the call's qualitative statement in the `note`. Do not back-calculate or invent a Q1 VPG.
 
+## 2026-05-05 — Live stock-quote data source
+
+- Added compact live stock-quote display under each company nav pill (VAC / HGV / TNL) in the topbar.
+- **Data source:** Yahoo Finance v8 chart endpoint (`https://query1.finance.yahoo.com/v8/finance/chart/<symbol>?interval=1d&range=2d`). Returns `meta.regularMarketPrice` and `meta.chartPreviousClose` from which we compute the absolute and percent change.
+- **CORS:** Yahoo's endpoint does not set `Access-Control-Allow-Origin: *`, so we proxy through a public CORS pass-through. Primary: `https://corsproxy.io/?<url>`. Fallback: `https://api.allorigins.win/raw?url=<url>`. If both fail, the UI shows `—` and stays out of the way.
+- **No API key.** Both the data source and the proxies are public/free. No secrets in client-side code.
+- **Refresh cadence:** initial fetch on page load + every 60 seconds while the tab is visible. Pauses when `document.hidden`. Trade-off: 60s is fresh enough for an executive dashboard while staying well under any informal rate ceiling.
+- **Resilience:** if the proxy or Yahoo changes shape, the dashboard still renders — the quote slot just shows `—`. The rest of the page is fully static and unaffected.
+- **Module:** `js/quotes.js` exposes `MVW_QUOTES.refresh()` and self-bootstraps on `DOMContentLoaded`. No coupling to `app.js`/`views.js` so route changes don't tear it down.
+
 ## Changelog
 - 2026-05-05: Initial architecture established for the Q1 2026 dashboard, derived from the FY2025 `mvw` repo.
+- 2026-05-05: Added live stock-quote display in topbar (Yahoo Finance + corsproxy.io / allorigins.win fallback).

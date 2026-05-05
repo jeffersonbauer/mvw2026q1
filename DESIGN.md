@@ -68,6 +68,15 @@ All fonts loaded from Google Fonts in `css/main.css` (line 6).
 - **Callouts** (`.callout`) — elevated background, gold 3px left-border. Used for context blurbs and "this section explained" copy.
 - **Tag** (`.tag`) — uppercase Lato 700, 11px, brand-colored background and border.
 
+## Live stock quote (topbar — added 2026-05-05)
+
+- **Component:** `.nav-pill-stack` wraps each company's nav pill and a `.ticker-quote` line beneath it. The Overview pill stays standalone.
+- **Layout:** flex column, gap 4px. Pill sits on top; quote below in a single 11px row.
+- **Quote row:** `.ticker-price` (JetBrains Mono 12px / 700, ink-deep) + `.ticker-change` (Lato 11px / 600, semantic color — `--positive` for +, `--negative` for −, `--text-tertiary` for flat or unknown).
+- **Loading state:** `--.--` for price, `—` for change. Same color as text-tertiary so it doesn't draw attention while resolving.
+- **Stale state:** if the most recent fetch failed, the existing values are kept and a subtle title-tooltip explains "Quote feed unavailable, last updated …".
+- **No flash on update:** values only re-render if they actually changed; the DOM stays stable to avoid distracting executives mid-read.
+
 ## Q1 2026 extensions (new components)
 
 - **Quarter banner** (`.quarter-banner`) — full-width navy hero on the overview page. Two columns: headline copy (left, with gold-highlighted phrases) + release-date stats (right). Becomes single-column under 900px.
@@ -99,3 +108,4 @@ All fonts loaded from Google Fonts in `css/main.css` (line 6).
 
 ## Changelog
 - 2026-05-05: Initial design-system snapshot for the Q1 2026 dashboard. Inherits all tokens from the FY2025 predecessor; adds quarter-banner, momentum-strip, transcript-quote, guidance-card, period-tag, and vector-tag components for the Q1 framing.
+- 2026-05-05: Added `.nav-pill-stack` + `.ticker-quote` topbar component for live stock quotes under MVW / HGV / TNL pills.
