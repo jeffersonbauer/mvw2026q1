@@ -1299,7 +1299,8 @@ table.data td.muted { color: var(--text-secondary); font-size: 12px; font-weight
   flex-direction: column;
   align-items: stretch;
   gap: 4px;
-  min-width: 96px;
+  /* No min-width — let the natural width of the ticker price + change set
+     the stack size so company pills aren't padded out beyond their content. */
 }
 .nav-pill-stack .nav-pill { width: 100%; }
 
@@ -1313,13 +1314,6 @@ table.data td.muted { color: var(--text-secondary); font-size: 12px; font-weight
   line-height: 1.2;
   white-space: nowrap;
   cursor: default;
-}
-.ticker-quote .ticker-sym {
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.6px;
-  color: var(--text-tertiary);
-  text-transform: uppercase;
 }
 .ticker-quote .ticker-price {
   font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
@@ -1343,10 +1337,6 @@ table.data td.muted { color: var(--text-secondary); font-size: 12px; font-weight
 .ticker-quote .ticker-change.is-negative { color: var(--negative); }
 .ticker-quote .ticker-change.is-neutral  { color: var(--text-tertiary); }
 
-@media (max-width: 1100px) {
-  .ticker-quote .ticker-sym { display: none; }
-  .nav-pill-stack { min-width: 88px; }
-}
 @media (max-width: 700px) {
   .ticker-quote { display: none; }
 }
