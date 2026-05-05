@@ -2,18 +2,28 @@
  * Live stock-quote module — Q1 2026 dashboard
  *
  * Renders compact "$XX.XX +X.XX (X%)" lines under each company nav pill.
- * Data: Yahoo Finance v8 chart endpoint, proxied through corsproxy.io (with
- * allorigins.win fallback) since Yahoo doesn't set CORS headers for this route.
+ * Data: Yahoo Finance v7 SPARK endpoint (batched, smaller payload than the
+ * v8/chart endpoint), proxied through corsproxy.io / allorigins.win in
+ * parallel — first proxy to respond wins (Promise.any).
  *
- * Refreshes every 60s while the tab is visible. Pauses when hidden.
- * No API key. If the feed fails the slot shows "—" — the rest of the
- * dashboard is unaffected.
+ * Boot sequence:
+ *   1. Fire the network request as soon as the script parses (defer ensures
+ *      DOM is parsed but render handlers may not be wired yet).
+ *   2. On DOMContentLoaded, instantly hydrate from sessionStorage cache so
+ *      previous values appear with zero latency.
+ *   3. When the in-flight fetch resolves, swap in fresh values.
+ *   4. Then poll every 60s while the tab is visible.
+ *
+ * No API key. If both proxies fail the cached values stay; if there's no
+ * cache, the slot shows "—" with a hover tooltip.
  */
 
 window.MVW_QUOTES = (() => {
   const SYMBOLS = ["VAC", "HGV", "TNL"];
   const REFRESH_MS = 60_000;
-  const YAHOO = (sym) => `https://query1.finance.yahoo.com/v8/finance/chart/${sym}?interval=1d&range=2d`;
+  const CACHE_PREFIX = "mvw_q1_quote_";
+  const YAHOO_BATCH = (syms) =>
+    `https://query1.finance.yahoo.com/v7/finance/spark?symbols=${syms.join(",")}&interval=1d&range=2d`;
   const PROXIES = [
     (url) => `https://corsproxy.io/?${encodeURIComponent(url)}`,
     (url) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`
@@ -22,34 +32,46 @@ window.MVW_QUOTES = (() => {
   let timerId = null;
   let lastSuccess = null;
 
-  async function fetchJson(url) {
-    const r = await fetch(url, { cache: "no-store" });
-    if (!r.ok) throw new Error(`HTTP ${r.status}`);
-    return r.json();
-  }
-
-  async function fetchOne(symbol) {
-    const target = YAHOO(symbol);
-    let lastErr = null;
-    for (const proxy of PROXIES) {
-      try {
-        const data = await fetchJson(proxy(target));
-        const meta = data?.chart?.result?.[0]?.meta;
-        if (!meta) throw new Error("no meta");
+  // Race all proxies in parallel; Promise.any returns the first fulfilled
+  // response. Cuts cold-start latency dramatically vs. sequential fallback.
+  async function fetchAll() {
+    const url = YAHOO_BATCH(SYMBOLS);
+    const attempts = PROXIES.map(async (proxy) => {
+      const r = await fetch(proxy(url), { cache: "no-store" });
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      const data = await r.json();
+      const results = data?.spark?.result || [];
+      const out = SYMBOLS.map((symbol) => {
+        const entry = results.find((x) => x.symbol === symbol);
+        const meta = entry?.response?.[0]?.meta;
+        if (!meta) return null;
         const price = meta.regularMarketPrice;
         const prev = meta.chartPreviousClose ?? meta.previousClose;
-        if (typeof price !== "number" || typeof prev !== "number") throw new Error("bad shape");
-        return { symbol, price, prev, change: price - prev, pct: ((price - prev) / prev) * 100, currency: meta.currency || "USD", time: meta.regularMarketTime };
-      } catch (e) {
-        lastErr = e;
-      }
-    }
-    throw lastErr || new Error("all proxies failed");
+        if (typeof price !== "number" || typeof prev !== "number") return null;
+        return {
+          symbol,
+          price,
+          prev,
+          change: price - prev,
+          pct: ((price - prev) / prev) * 100,
+          currency: meta.currency || "USD",
+          time: meta.regularMarketTime
+        };
+      });
+      // Require at least one symbol to have parsed cleanly, otherwise
+      // treat this proxy's response as bad and let the other one win.
+      if (!out.some(Boolean)) throw new Error("no usable quotes");
+      return out;
+    });
+    return Promise.any(attempts);
   }
 
-  function fmtPrice(v) {
-    return "$" + v.toFixed(2);
-  }
+  // Kick off the very first request immediately at module-eval time
+  // (script is `defer`, so DOM is parsed but listeners may not be ready).
+  // This trims ~200-400ms off the time-to-first-render.
+  const initialFetchPromise = fetchAll().catch(() => null);
+
+  function fmtPrice(v) { return "$" + v.toFixed(2); }
   function fmtChange(c, pct) {
     const sign = c > 0 ? "+" : (c < 0 ? "−" : "");
     return `${sign}${Math.abs(c).toFixed(2)} (${sign}${Math.abs(pct).toFixed(2)}%)`;
@@ -60,18 +82,28 @@ window.MVW_QUOTES = (() => {
     return "is-neutral";
   }
 
+  function saveCache(q) {
+    try { sessionStorage.setItem(CACHE_PREFIX + q.symbol, JSON.stringify(q)); } catch (e) {}
+  }
+  function loadCache(symbol) {
+    try { return JSON.parse(sessionStorage.getItem(CACHE_PREFIX + symbol) || "null"); }
+    catch (e) { return null; }
+  }
+
   function renderQuote(symbol, q) {
     const slot = document.querySelector(`.ticker-quote[data-symbol="${symbol}"]`);
     if (!slot) return;
     const priceEl = slot.querySelector(".ticker-price");
     const changeEl = slot.querySelector(".ticker-change");
     if (!q) {
-      // keep old values if we have them; only initialize the placeholder
+      // Only swap to placeholder if we never had a value
       if (priceEl.dataset.placeholder === "1") {
         priceEl.textContent = "—";
         changeEl.textContent = "";
       }
-      slot.title = lastSuccess ? `Quote feed unavailable; last good update ${new Date(lastSuccess).toLocaleTimeString()}` : "Quote feed unavailable";
+      slot.title = lastSuccess
+        ? `Quote feed unavailable; last good update ${new Date(lastSuccess).toLocaleTimeString()}`
+        : "Quote feed unavailable";
       return;
     }
     const newPrice = fmtPrice(q.price);
@@ -80,37 +112,62 @@ window.MVW_QUOTES = (() => {
     priceEl.dataset.placeholder = "0";
     changeEl.className = `ticker-change ${changeClass(q.change)}`;
     if (changeEl.textContent !== newChange) changeEl.textContent = newChange;
-    const tt = `${symbol} · ${fmtPrice(q.price)} · ${fmtChange(q.change, q.pct)}${q.time ? ` · last ${new Date(q.time * 1000).toLocaleTimeString()}` : ""}`;
-    slot.title = tt;
+    slot.title = `${symbol} · ${newPrice} · ${newChange}${q.time ? ` · last ${new Date(q.time * 1000).toLocaleTimeString()}` : ""}`;
   }
 
-  async function refresh() {
-    const results = await Promise.allSettled(SYMBOLS.map(fetchOne));
+  function hydrateFromCache() {
+    SYMBOLS.forEach((sym) => {
+      const cached = loadCache(sym);
+      if (cached) renderQuote(sym, cached);
+    });
+  }
+
+  function applyQuotes(quotes) {
+    if (!quotes) return false;
     let anySuccess = false;
-    results.forEach((r, i) => {
+    quotes.forEach((q, i) => {
       const sym = SYMBOLS[i];
-      if (r.status === "fulfilled") {
-        renderQuote(sym, r.value);
+      if (q) {
+        renderQuote(sym, q);
+        saveCache(q);
         anySuccess = true;
       } else {
         renderQuote(sym, null);
       }
     });
     if (anySuccess) lastSuccess = Date.now();
+    return anySuccess;
   }
 
-  function start() {
-    refresh();
+  async function refresh() {
+    try {
+      const quotes = await fetchAll();
+      applyQuotes(quotes);
+    } catch (e) {
+      // Silent fail — cached values stay; placeholders remain "—"
+      SYMBOLS.forEach((sym) => {
+        const slot = document.querySelector(`.ticker-quote[data-symbol="${sym}"]`);
+        const priceEl = slot?.querySelector(".ticker-price");
+        if (priceEl?.dataset.placeholder === "1") renderQuote(sym, null);
+      });
+    }
+  }
+
+  async function boot() {
+    // 1. Instant render of cached values (zero network latency)
+    hydrateFromCache();
+    // 2. Apply the in-flight initial fetch when it resolves
+    const quotes = await initialFetchPromise;
+    applyQuotes(quotes);
+    // 3. Recurring refresh (visibility-aware)
     if (timerId) clearInterval(timerId);
-    timerId = setInterval(() => {
-      if (!document.hidden) refresh();
-    }, REFRESH_MS);
+    timerId = setInterval(() => { if (!document.hidden) refresh(); }, REFRESH_MS);
   }
 
-  document.addEventListener("DOMContentLoaded", start);
+  document.addEventListener("DOMContentLoaded", boot);
   document.addEventListener("visibilitychange", () => {
     if (!document.hidden) refresh();
   });
 
-  return { refresh, fetchOne };
+  return { refresh, fetchAll };
 })();

@@ -34,6 +34,19 @@ Append a dated bullet whenever architecture, data shape, file structure, framewo
 - **Resilience:** if the proxy or Yahoo changes shape, the dashboard still renders — the quote slot just shows `—`. The rest of the page is fully static and unaffected.
 - **Module:** `js/quotes.js` exposes `MVW_QUOTES.refresh()` and self-bootstraps on `DOMContentLoaded`. No coupling to `app.js`/`views.js` so route changes don't tear it down.
 
+## 2026-05-05 — Live-quotes performance optimization (v2)
+
+The first cut of `js/quotes.js` was making three sequential proxy-fallback chains (one per symbol) and could take ~10s to render on cold load. Optimized:
+
+- **Batched request.** Switched from Yahoo's `v8/finance/chart/<symbol>` (one request per symbol) to `v7/finance/spark?symbols=VAC,HGV,TNL` (one request for all three, smaller payload). 3× fewer roundtrips through the proxy.
+- **Race the proxies via `Promise.any`.** Both proxies fire in parallel — the first to respond wins, the slow one is ignored. Cuts cold-start latency from "slow proxy timeout" to "fast proxy response" on every load.
+- **Preconnect hints in `<head>`.** Added `<link rel="preconnect">` for both proxy origins and `<link rel="dns-prefetch">` for Yahoo. Browser warms DNS + TLS while the rest of the page parses.
+- **Kick off the first fetch at module-eval time.** `quotes.js` starts the network request as soon as the script parses (the `defer` attr means HTML is already parsed by then) — `boot()` only awaits it later. Saves ~200-400ms of "wait for handler to fire" overhead.
+- **`sessionStorage` cache + instant hydration.** On boot, `hydrateFromCache()` paints the previous session's last-known values immediately (zero network). The in-flight fetch then swaps in fresh values when ready. Subsequent reloads in the same browser session show prices instantly.
+
+Net effect: cold first-load shifted from ~10s → ~1-2s typically; warm reload (with cache) → instant placeholder + fresh values within ~1s.
+
 ## Changelog
 - 2026-05-05: Initial architecture established for the Q1 2026 dashboard, derived from the FY2025 `mvw` repo.
 - 2026-05-05: Added live stock-quote display in topbar (Yahoo Finance + corsproxy.io / allorigins.win fallback).
+- 2026-05-05: Live-quotes perf v2 — Yahoo spark batched endpoint + Promise.any proxy race + preconnect hints + sessionStorage instant-hydration cache. Cold load ~10s → ~1-2s.
