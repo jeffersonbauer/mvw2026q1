@@ -183,7 +183,7 @@ button {
 .topbar__nav {
   margin-left: auto;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: var(--space-3);
 }
 
