@@ -335,15 +335,15 @@ window.MVW_DATA = {
         sourceLabel: "MVW Q1 2026 earnings call transcript (May 5, 2026)",
         sourceUrl: "https://ir.marriottvacationsworldwide.com/news-releases",
         items: [
-          "CEO Matt Avril: \"In any situation like the one when I stepped in, you assess who and then you go assess what. We are well ahead of where I could have hoped we would be a little over two months ago.\" Six months in role; new permanent CEO since Feb 16, 2026.",
-          "President & COO Mike Flaskey: \"Global contract sales were up 8% in April on a year-over-year basis, powered by North America where we were up 11%. Our VPGs in April were up $450, just over 12.7% versus prior year.\"",
+          "Avril is six months in role; permanent CEO since Feb 16, 2026. Flaskey ~3 months in role as President & COO; new Chief Sales & Marketing Officer added under his leadership.",
           "Three-point operating framework: (1) grow the right tour flow; (2) strengthen sales operating discipline; (3) expand demand from new sources & drive incremental tours from existing infrastructure — all while increasing average sales price.",
           "May 1, 2026: restructured sales & marketing leadership compensation packages aligning incentives with revenue and net operating income growth. Two new owner-loyalty tiers added at high end of Marriott program.",
           "End of May 2026: Dream Vacation Packages buyer-incentive launches — designed to drive higher close rates, more predictable future-tour pipeline, and higher VPGs company-wide.",
-          "June 22, 2026: Inner Circle experiential-events platform launches. Flaskey: \"This type of event platform has proven to drive higher-quality, incremental tour flow and VPG, while strengthening engagement across the owner's life cycle.\"",
           "FY2026 guidance: contract sales RAISED to +3-7% (mid: $1,815-1,885M). Adj EBITDA REAFFIRMED at $755-780M (+4% mid). Adj free cash flow $375-425M (+176% YoY).",
           "Capital framework: reduce leverage from 4.2x to <4.0x; balance debt reduction with dividends and opportunistic buybacks.",
-          "Q1 specifics: contract sales $411M (-2% YoY); Adj EBITDA $161M (-16% YoY) on lower contract sales, lower reportability, higher product/marketing costs; sales reserve 12.3% of contract sales (down sequentially); Adj FCF $114M (+$74M YoY incl. $50M Westin Cancun proceeds); $460M securitization closed April 2026 at 4.86% / 98% advance rate."
+          "Q1 specifics: contract sales $411M (-2% YoY); Adj EBITDA $161M (-16% YoY) on lower contract sales, lower reportability, higher product/marketing costs; sales reserve 12.3% of contract sales (down sequentially); Adj FCF $114M (+$74M YoY incl. $50M Westin Cancun proceeds).",
+          "Asia-Pacific contribution: tours down 3% in Q1 driven by planned Asia reductions; ex-Asia-Pac, contract sales down only 1%. Asia-Pacific operations restructured at end of January 2026.",
+          "Hawaii: first 1.5 weeks of March 2026 disrupted by weather (Maui exposure); company will not 'lean on weather' as an excuse and is focused on direct-marketing flywheel."
         ]
       },
 
