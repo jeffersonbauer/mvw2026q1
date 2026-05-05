@@ -37,6 +37,17 @@ These three are the only public pure-play vacation-ownership operators of meanin
 - The MVW Q1 2026 Investor Presentation PDF (in the project parent folder) is treated as primary for: addressable market (~55M US households), Adj EBITDA contribution mix (Mgmt&Exch 35% / Dev 35% / Financing 20% / Rentals 10%), liquidity ($854M), debt maturity ladder, and 2026 guidance ($755-780M Adj EBITDA, $375-425M FCF, $1,815-1,885M contract sales).
 - Strategic-initiatives panel must list: new sales/marketing leadership, owner-loyalty tier expansion (May 1), Dream Vacation Packages (late May), Inner Circle events (June 22), data-driven tour logistics, Bonvoy + World of Hyatt partnership marketing.
 
+### Market capitalization comparison (added 2026-05-05)
+- The overview includes an explicit **Q1 2026 market capitalization & share-price performance** panel comparing all three peers.
+- Three side-by-side cards show: end-of-Q1 market cap (Mar 31, 2026), Q1 share-price change %, Dec 31 / Mar 31 close prices, weighted-avg diluted shares.
+- Two charts: market cap (Dec 31 vs Mar 31 side-by-side bars) and Q1 share-price performance (% change).
+- Three new rows added to the comparative scorecard: EoQ market cap, Q1 stock-price performance, Mar 31 close price.
+- **Source:** Mar 31 / Dec 31 closing prices from Yahoo Finance (one-time data sourcing, hardcoded into `data.js`). Diluted shares calculated from each company's Q1 net income / diluted EPS as a defensible weighted-avg proxy.
+- **Methodology note** rendered in the panel itself for transparency.
+
+### Momentum strip — common metric (clarified 2026-05-05)
+- The 3-up momentum strip below the quarter banner must use a **single consistent metric across all three companies** (not three different ones). Selected: **Q1 Adj EBITDA**, because it cleanly maps to the headline narrative (HGV beats &amp; raises = +8%, TNL accelerates = +11%, MVW resets = −16%) and is directly comparable.
+
 ### Live stock quotes (added 2026-05-05)
 - A small live stock-quote display sits under each of the three company nav pills (VAC / HGV / TNL) in the topbar.
 - Shows current price + absolute change + percent change with green/red coloring.
@@ -64,3 +75,5 @@ These three are the only public pure-play vacation-ownership operators of meanin
 ## Changelog
 - 2026-05-05: Initial scope set for the Q1 2026 dashboard.
 - 2026-05-05: Added live stock-quote display under company nav pills (Yahoo Finance via public CORS proxy, 60s refresh).
+- 2026-05-05: Added market-capitalization comparison section to overview (EoQ cards + charts + scorecard rows).
+- 2026-05-05: Locked momentum strip to a single common metric (Q1 Adj EBITDA) for consistency.

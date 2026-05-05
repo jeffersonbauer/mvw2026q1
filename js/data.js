@@ -94,6 +94,13 @@ window.MVW_DATA = {
         defaultRate: { value: null, unit: "percent", source: "MVW Q1 2026 call", note: "Defaults unchanged YoY; '2025 receivable originations performing in line with expectations'" },
 
         // Liquidity / debt as of March 30, 2026 (per IR Presentation)
+        // Market cap as of end of Q1 2026 (close × Q1 weighted-avg diluted shares)
+        marketCapEoq: { value: 2238, unit: "USD millions", source: "calculated: Mar 31, 2026 close $65.12 × Q1 weighted-avg diluted shares 34.4M (from $22M NI / $0.64 diluted EPS)" },
+        priceMar31: { value: 65.12, unit: "USD per share", source: "Yahoo Finance (Mar 31, 2026 close)" },
+        priceDec31: { value: 57.69, unit: "USD per share", source: "Yahoo Finance (Dec 31, 2025 close)" },
+        q1PricePerformance: { value: 12.88, unit: "percent", source: "calculated: ($65.12 / $57.69) - 1", note: "Q1 2026 stock-price total return (price-only, ex-dividends)" },
+        dilutedShares: { value: 34.4, unit: "millions of weighted-avg diluted shares", source: "calculated from Q1 2026 net income / diluted EPS" },
+
         liquidity: { value: 854, unit: "USD millions", source: "MVW Q1 2026 IR Presentation, slide 11", note: "$268M cash + $108M securitization-eligible notes + $478M revolver capacity" },
         cashOnHand: { value: 268, unit: "USD millions", source: "MVW Q1 2026 IR Presentation" },
         revolverAvailability: { value: 478, unit: "USD millions", source: "MVW Q1 2026 IR Presentation" },
@@ -419,6 +426,13 @@ window.MVW_DATA = {
         owners: { value: 720000, unit: "Club members", source: "HGV Q1 2026 release" },
         avgFico: { value: 734, unit: "FICO", source: "10-K FY2025, TFR Note", note: "Weighted-average for new originations" },
 
+        // Market cap as of end of Q1 2026 (close × Q1 weighted-avg diluted shares)
+        marketCapEoq: { value: 3268, unit: "USD millions", source: "calculated: Mar 31, 2026 close $39.12 × Q1 weighted-avg diluted shares 83.5M (from $66M NI / $0.79 diluted EPS)" },
+        priceMar31: { value: 39.12, unit: "USD per share", source: "Yahoo Finance (Mar 31, 2026 close)" },
+        priceDec31: { value: 44.75, unit: "USD per share", source: "Yahoo Finance (Dec 31, 2025 close)" },
+        q1PricePerformance: { value: -12.58, unit: "percent", source: "calculated: ($39.12 / $44.75) - 1", note: "Q1 2026 stock-price total return (price-only, ex-dividends)" },
+        dilutedShares: { value: 83.5, unit: "millions of weighted-avg diluted shares", source: "calculated from Q1 2026 net income / diluted EPS" },
+
         // Capital / balance sheet (March 31, 2026)
         corporateDebt: { value: 4800, unit: "USD millions", source: "HGV Q1 2026 release", note: "Net; weighted avg rate 5.649%" },
         securitizedDebt: { value: 2600, unit: "USD millions", source: "HGV Q1 2026 release", note: "Non-recourse; weighted avg rate 5.028%" },
@@ -700,6 +714,13 @@ window.MVW_DATA = {
         receivablesCurrent: { value: 94.2, unit: "percent", source: "TNL Q1 2026 10-Q", note: "Current portion of receivables" },
         delinquency91_120: { value: 1.4, unit: "percent of receivables", source: "TNL Q1 2026 10-Q" },
         fico700plus: { value: 62, unit: "percent of receivables", source: "TNL Q1 2026 10-Q" },
+
+        // Market cap as of end of Q1 2026 (close × Q1 weighted-avg diluted shares)
+        marketCapEoq: { value: 4481, unit: "USD millions", source: "calculated: Mar 31, 2026 close $69.19 × Q1 weighted-avg diluted shares 64.8M (from $79M NI / $1.22 diluted EPS)" },
+        priceMar31: { value: 69.19, unit: "USD per share", source: "Yahoo Finance (Mar 31, 2026 close)" },
+        priceDec31: { value: 70.53, unit: "USD per share", source: "Yahoo Finance (Dec 31, 2025 close)" },
+        q1PricePerformance: { value: -1.90, unit: "percent", source: "calculated: ($69.19 / $70.53) - 1", note: "Q1 2026 stock-price total return (price-only, ex-dividends)" },
+        dilutedShares: { value: 64.8, unit: "millions of weighted-avg diluted shares", source: "calculated from Q1 2026 net income / diluted EPS" },
 
         // Capital / balance sheet
         corporateDebt: { value: 3600, unit: "USD millions", source: "TNL Q1 2026 release" },

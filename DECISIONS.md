@@ -46,7 +46,20 @@ The first cut of `js/quotes.js` was making three sequential proxy-fallback chain
 
 Net effect: cold first-load shifted from ~10s → ~1-2s typically; warm reload (with cache) → instant placeholder + fresh values within ~1s.
 
+## 2026-05-05 — Market-cap data sourcing methodology
+
+- End-of-quarter market cap is computed as **closing price on Mar 31, 2026 × Q1 weighted-average diluted shares**.
+- Mar 31, 2026 close prices fetched once from Yahoo Finance (`/v7/finance/spark`) and hardcoded into `js/data.js` (VAC $65.12, HGV $39.12, TNL $69.19).
+- Diluted shares derived from each company's Q1 2026 disclosed net income / diluted EPS:
+  - VAC: $22M / $0.64 ≈ 34.4M shares
+  - HGV: $66M / $0.79 ≈ 83.5M shares
+  - TNL: $79M / $1.22 ≈ 64.8M shares
+- This is the **weighted-average** diluted share count from Q1, not point-in-time shares outstanding at Mar 31. It's a defensible proxy that doesn't require pulling each company's 10-Q balance-sheet share-count footnote. Documented inline in the rendered panel so users see the methodology.
+- Q1 share-price performance computed as Mar 31, 2026 close ÷ Dec 31, 2025 close − 1 (price-only, ex-dividends).
+- Why hardcoded vs. live: market cap "for the quarter" is a point-in-time snapshot; pulling it live each load would (a) create unnecessary network dependency for a static value, (b) drift away from the Q1 EoQ snapshot users expect, and (c) require additional Yahoo round-trips. Live current quotes already exist for the topbar.
+
 ## Changelog
 - 2026-05-05: Initial architecture established for the Q1 2026 dashboard, derived from the FY2025 `mvw` repo.
 - 2026-05-05: Added live stock-quote display in topbar (Yahoo Finance + corsproxy.io / allorigins.win fallback).
 - 2026-05-05: Live-quotes perf v2 — Yahoo spark batched endpoint + Promise.any proxy race + preconnect hints + sessionStorage instant-hydration cache. Cold load ~10s → ~1-2s.
+- 2026-05-05: Added market-cap comparison data + UI; sourced Mar 31 / Dec 31 closes from Yahoo (hardcoded), diluted shares from Q1 NI/EPS.

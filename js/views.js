@@ -112,6 +112,11 @@ window.MVW_VIEWS = (() => {
       { label: "Q1 tours growth (YoY)", path: { mvw: null, hgv: "toursGrowth", tnl: null }, unit: "percent", direction: "high", caption: "HGV reported +8.5%; MVW down 3% (Asia-Pac planned reduction); TNL +5%." },
       { label: "Adj free cash flow (Q1)", path: { mvw: "adjFreeCashFlow", hgv: "adjFreeCashFlow", tnl: "adjFreeCashFlow" }, unit: "USD millions", direction: "high" },
 
+      { label: "Market capitalization (Mar 31, 2026)", isSection: true },
+      { label: "Q1 EoQ market cap", path: "marketCapEoq", unit: "USD millions", direction: "high" },
+      { label: "Q1 stock-price performance", path: "q1PricePerformance", unit: "percent", direction: "high" },
+      { label: "Mar 31, 2026 close price", path: "priceMar31", unit: "USD per share", direction: "high" },
+
       { label: "Capital position (Mar 31, 2026)", isSection: true },
       { label: "Corporate debt", path: "corporateDebt", unit: "USD millions", direction: "low" },
       { label: "Securitized debt (non-recourse)", path: "securitizedDebt", unit: "USD millions", direction: "low" },
@@ -230,17 +235,17 @@ window.MVW_VIEWS = (() => {
         <div class="momentum-strip__cell">
           <div class="momentum-strip__co"><span class="swatch" style="background:#0862A7"></span>MVW · Q1 Adj EBITDA</div>
           <div class="momentum-strip__metric">$161M <span class="num" style="color:var(--negative);font-size:14px;">−16% YoY</span></div>
-          <div class="momentum-strip__sub">Reset quarter; new operating team in place. April contract sales <strong>+8% global / +11% North America</strong>.</div>
+          <div class="momentum-strip__sub">The reset. New operating team in place; April contract sales already <strong>+8% global / +11% North America</strong>.</div>
         </div>
         <div class="momentum-strip__cell">
-          <div class="momentum-strip__co"><span class="swatch" style="background:#002C51"></span>HGV · Adj diluted EPS</div>
-          <div class="momentum-strip__metric">$0.99 <span class="num" style="color:var(--positive);font-size:14px;">vs. $0.56 cons</span></div>
-          <div class="momentum-strip__sub">Beat by 67%; raised 2026 Adj EBITDA guide to <strong>$1.225-1.265B</strong>.</div>
+          <div class="momentum-strip__co"><span class="swatch" style="background:#002C51"></span>HGV · Q1 Adj EBITDA</div>
+          <div class="momentum-strip__metric">$267M <span class="num" style="color:var(--positive);font-size:14px;">+8% YoY</span></div>
+          <div class="momentum-strip__sub">The beat &amp; raise. Adj EPS $0.99 vs. $0.56 cons; raised 2026 EBITDA guide to <strong>$1.225-1.265B</strong>.</div>
         </div>
         <div class="momentum-strip__cell">
-          <div class="momentum-strip__co"><span class="swatch" style="background:#1D6B44"></span>TNL · VO segment EBITDA</div>
-          <div class="momentum-strip__metric">$191M <span class="num" style="color:var(--positive);font-size:14px;">+20% YoY</span></div>
-          <div class="momentum-strip__sub">Best Q1 segment growth of the three; +5% tours, +3% VPG, +7% Gross VOI.</div>
+          <div class="momentum-strip__co"><span class="swatch" style="background:#1D6B44"></span>TNL · Q1 Adj EBITDA</div>
+          <div class="momentum-strip__metric">$225M <span class="num" style="color:var(--positive);font-size:14px;">+11% YoY</span></div>
+          <div class="momentum-strip__sub">The accelerator. VO segment EBITDA <strong>+20%</strong> on +5% tours, +3% VPG, +7% Gross VOI.</div>
         </div>
       </div>
 
@@ -291,6 +296,31 @@ window.MVW_VIEWS = (() => {
       </div>
 
       <div class="panel" style="margin-top:32px;">
+        <h2>Q1 2026 market capitalization &amp; share-price performance</h2>
+        <p class="muted" style="font-size:12px;margin-bottom:16px;">
+          Market cap as of <strong>March 31, 2026</strong> close (Yahoo Finance) × Q1 2026 weighted-average diluted shares (derived from each company's Q1 net income / diluted EPS).
+          Q1 stock-price performance compares Mar 31, 2026 close to Dec 31, 2025 close (price-only return, ex-dividends).
+        </p>
+        <div class="grid grid--3">
+          ${marketCapCard("MVW", mvw, "#0862A7", "mvw")}
+          ${marketCapCard("HGV", hgv, "#002C51", "hgv")}
+          ${marketCapCard("TNL", tnl, "#1D6B44", "tnl")}
+        </div>
+        <div class="grid grid--2" style="margin-top:24px;">
+          <div>
+            <h3>Market cap — Q1 starting vs. ending</h3>
+            <div class="chart-wrap"><canvas id="ov-chart-mktcap"></canvas></div>
+            <p class="muted" style="font-size:11px;margin-top:8px;">Bars compare market cap on Dec 31, 2025 (Q1 starting) to Mar 31, 2026 (Q1 ending). TNL leads in absolute size; MVW is the smallest but had the strongest Q1 share-price gain.</p>
+          </div>
+          <div>
+            <h3>Q1 stock-price performance</h3>
+            <div class="chart-wrap"><canvas id="ov-chart-perf"></canvas></div>
+            <p class="muted" style="font-size:11px;margin-top:8px;">VAC +12.9% reflects investor optimism about the new operating team's commercial-turnaround plan; HGV −12.6% reflects the lap of Bluegreen Max launch + VPG headwind; TNL roughly flat after a record FY2025.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" style="margin-top:32px;">
         <h2>What's the executive read on Q1 2026?</h2>
         <div class="grid grid--3" style="margin-top:8px;">
           <div>
@@ -336,6 +366,38 @@ window.MVW_VIEWS = (() => {
 
       ${sourcesBlock([...mvw.sources, ...hgv.sources, ...tnl.sources])}
     `;
+
+    function marketCapCard(short, co, color, slug) {
+      const k = co.q1Headline;
+      const mc = k.marketCapEoq.value;
+      const mcStart = (k.priceDec31.value * k.dilutedShares.value);
+      const change = k.q1PricePerformance.value;
+      const changeClass = change > 0 ? "is-positive" : (change < 0 ? "is-negative" : "is-neutral");
+      const changeArrow = change > 0 ? "▲" : (change < 0 ? "▼" : "▬");
+      return `
+        <div class="panel" style="border-top:3px solid ${color};padding:20px 24px;cursor:pointer;" data-route="#/company/${slug}/financials">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+            <span style="display:inline-block;width:14px;height:14px;background:${color};"></span>
+            <span style="font-family:'Lato';font-size:11px;font-weight:700;letter-spacing:0.6px;text-transform:uppercase;color:var(--text-secondary);">${short} · ${escapeHtml(co.ticker)}</span>
+          </div>
+          <div style="font-family:'Montserrat';font-size:30px;font-weight:200;color:var(--ink-deep);letter-spacing:-0.6px;line-height:1.05;">
+            ${fmtNumber(mc, "USD millions")}
+          </div>
+          <div style="font-size:11px;color:var(--text-tertiary);margin-top:2px;">EoQ market cap</div>
+          <div style="margin-top:14px;padding-top:10px;border-top:1px dashed var(--border-subtle);display:flex;justify-content:space-between;align-items:baseline;font-size:12px;">
+            <span style="color:var(--text-secondary);font-weight:600;">Q1 share-price</span>
+            <span class="${changeClass}" style="font-family:'JetBrains Mono';font-weight:700;font-size:14px;">
+              ${changeArrow} ${change > 0 ? "+" : ""}${change.toFixed(2)}%
+            </span>
+          </div>
+          <div style="margin-top:8px;display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:11px;color:var(--text-tertiary);">
+            <div>Dec 31, 2025: <span class="num" style="color:var(--text-primary);font-weight:600;">$${k.priceDec31.value.toFixed(2)}</span></div>
+            <div>Mar 31, 2026: <span class="num" style="color:var(--text-primary);font-weight:600;">$${k.priceMar31.value.toFixed(2)}</span></div>
+            <div style="grid-column:span 2;">Diluted shares: <span class="num" style="color:var(--text-primary);font-weight:600;">${k.dilutedShares.value.toFixed(1)}M</span></div>
+          </div>
+        </div>
+      `;
+    }
 
     function heroCard(short, full, ticker, co, slug) {
       const mark = co.brandColor;
@@ -396,6 +458,23 @@ window.MVW_VIEWS = (() => {
       hgv: [(D.hgv.guidance.adjEbitda.low + D.hgv.guidance.adjEbitda.high) / 2],
       tnl: [(D.tnl.guidance.adjEbitda.low + D.tnl.guidance.adjEbitda.high) / 2],
       currency: true, unit: "M"
+    });
+    // Market cap — Q1 starting vs. ending
+    const startCap = (co) => Math.round(co.q1Headline.priceDec31.value * co.q1Headline.dilutedShares.value);
+    MVW_CHARTS.comparativeBars("ov-chart-mktcap", {
+      labels: ["Dec 31, 2025", "Mar 31, 2026"],
+      mvw: [startCap(D.mvw), D.mvw.q1Headline.marketCapEoq.value],
+      hgv: [startCap(D.hgv), D.hgv.q1Headline.marketCapEoq.value],
+      tnl: [startCap(D.tnl), D.tnl.q1Headline.marketCapEoq.value],
+      currency: true, unit: "M"
+    });
+    // Q1 stock-price performance (% change)
+    MVW_CHARTS.comparativeBars("ov-chart-perf", {
+      labels: ["Q1 2026 share-price change"],
+      mvw: [D.mvw.q1Headline.q1PricePerformance.value],
+      hgv: [D.hgv.q1Headline.q1PricePerformance.value],
+      tnl: [D.tnl.q1Headline.q1PricePerformance.value],
+      currency: false, unit: "%"
     });
   }
 
