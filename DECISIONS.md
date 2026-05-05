@@ -1,0 +1,28 @@
+# DECISIONS.md — Architecture & Data-Shape Decisions
+
+Append a dated bullet whenever architecture, data shape, file structure, framework, or build approach changes. **Check this file before changing any of those things.**
+
+---
+
+## 2026-05-05 — Initial architecture (Q1 2026 dashboard)
+
+- **Static SPA, no build step.** HTML + CSS + vanilla JS served as static files; deploy target is GitHub Pages. Same approach as the predecessor `jeffersonbauer/mvw` (FY2025 dashboard). Rationale: zero deployment friction, instant local preview via `python3 -m http.server`, no toolchain risk for an executive-facing dashboard that needs to be reliably refreshable each quarter.
+- **Hash-based router.** Routes are `#/` (overview) and `#/company/<slug>/<tab>` (company drill-down). Six tabs per company: `exec`, `segments`, `footprint`, `financials`, `growth`, `risks`. Lifted from the predecessor for parity.
+- **Data file shape: one global, one source-of-truth.** All data lives on `window.MVW_DATA` in `js/data.js`. Per-company structure documented at the top of that file. **New for Q1 2026:** quarterly metrics live in `q1Headline.*` (with `priorQ1` for YoY) — distinguishing them from the trailing FY anchors (`*FY` suffix on the same object) and the forward `guidance` block. This lets future-Claude refresh quarterly without hunting for which fields are quarterly vs. annual.
+- **Strategic initiatives split out from growth catalysts.** `strategicInitiatives[]` captures programs explicitly announced *in this quarter's release/call* (e.g., MVW Inner Circle launch, HGV Elara buyout, TNL Resort Optimization). `growth[]` retains broader / longer-running catalysts. Both render on the Growth tab.
+- **Charts library: Chart.js 4.4.1 via CDN.** Same as predecessor.
+- **Map library: Leaflet 1.9.4 + CARTO light tiles via CDN.** Same as predecessor.
+- **Fonts: Montserrat (display, thin weights) + Lato (body) + JetBrains Mono (numerics).** Loaded from Google Fonts. Same as predecessor.
+- **No analytics, no telemetry, no cookies.** This is a static reference dashboard.
+
+## 2026-05-05 — MVW Q1 segment data uses FY2025 baselines
+
+- MVW does not break out segment-level revenue or Adj EBITDA in the Q1 2026 release; the press release reports consolidated figures only. The Segment Drill-Down tab for MVW therefore displays FY2025 segment splits as the baseline (with a clear note in the page header). HGV and TNL Q1 2026 releases do disclose Q1 segment revenue and Adj EBITDA — those tabs use Q1 numbers.
+- If MVW begins disclosing segment-level Q1 figures in future quarters, switch the MVW segment block to quarterly figures and remove the FY2025 caveat in the views.
+
+## 2026-05-05 — MVW Q1 VPG / tours not separately disclosed
+
+- The MVW Q1 2026 release and presentation report consolidated contract sales ($411M, -2% YoY) and tour decline (-3% YoY) but do **not** publish a Q1 2026 VPG number in the headline materials. April 2026 VPG (+12.7% YoY) was disclosed verbally on the call. The data file leaves `q1Headline.vpg.value = null` and includes the call's qualitative statement in the `note`. Do not back-calculate or invent a Q1 VPG.
+
+## Changelog
+- 2026-05-05: Initial architecture established for the Q1 2026 dashboard, derived from the FY2025 `mvw` repo.

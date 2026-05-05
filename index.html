@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Timeshare Competitive Intelligence — Q1 2026 · MVW vs. HGV & TNL</title>
+  <meta name="description" content="Executive timeshare competitive-intelligence dashboard for Q1 2026: Marriott Vacations Worldwide vs. Hilton Grand Vacations and Travel + Leisure. Source: Q1 2026 earnings releases, 10-Qs, and call transcripts." />
+
+  <link rel="stylesheet" href="css/main.css?v=2026-05-05a" />
+
+  <!-- Leaflet (map) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+        crossorigin="" />
+  <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+          crossorigin=""></script>
+
+  <!-- Chart.js -->
+  <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <!-- Data and app -->
+  <script defer src="js/data.js?v=2026-05-05a"></script>
+  <script defer src="js/charts.js?v=2026-05-05a"></script>
+  <script defer src="js/views.js?v=2026-05-05a"></script>
+  <script defer src="js/app.js?v=2026-05-05a"></script>
+</head>
+<body>
+  <div class="app-shell">
+
+    <header class="topbar">
+      <div class="topbar__brand" data-route="#/">
+        <div>
+          <div class="topbar__title">Timeshare Competitive Intelligence</div>
+          <div class="topbar__subtitle">Timeshare Industry · Q1 2026 Earnings Snapshot</div>
+        </div>
+      </div>
+
+      <nav class="topbar__nav" id="primary-nav">
+        <button class="nav-pill" data-route="#/">Overview</button>
+        <button class="nav-pill" data-route="#/company/mvw/exec">
+          <span class="swatch" style="background:#0862A7"></span>MVW
+        </button>
+        <button class="nav-pill" data-route="#/company/hgv/exec">
+          <span class="swatch" style="background:#002C51"></span>HGV
+        </button>
+        <button class="nav-pill" data-route="#/company/tnl/exec">
+          <span class="swatch" style="background:#1D6B44"></span>TNL
+        </button>
+      </nav>
+
+      <div class="topbar__meta">
+        <div>Q1 2026 Earnings</div>
+        <div>Updated 2026-05-05</div>
+      </div>
+    </header>
+
+    <main class="shell" id="app-root">
+      <div class="splash">Loading dashboard…</div>
+    </main>
+
+    <footer class="footer">
+      <div>
+        Data sourced from <strong>Q1 2026 earnings releases, 10-Q filings, investor presentations, and earnings-call transcripts</strong>
+        for Marriott Vacations Worldwide (NYSE: VAC, May 5, 2026), Hilton Grand Vacations (NYSE: HGV, Apr 29, 2026), and Travel + Leisure Co. (NYSE: TNL, Apr 22, 2026).
+      </div>
+      <div class="muted" style="margin-top:6px;">
+        No projections, estimates, or fabricated figures. Risk-matrix severity / likelihood scores are analyst-coded overlays — not company disclosures. See per-company Sources block for primary URLs.
+      </div>
+    </footer>
+  </div>
+</body>
+</html>
