@@ -231,6 +231,25 @@ button {
   font-weight: 600;
 }
 
+.topbar__archive-link {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px dashed var(--border-subtle);
+  font-family: 'Lato', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--accent-gold);
+  text-decoration: none;
+  transition: color 150ms ease-out;
+  white-space: nowrap;
+}
+.topbar__archive-link:hover {
+  color: var(--ink-deep);
+  text-decoration: underline;
+}
+
 /* ==========================================================================
    Layout
    ========================================================================== */
